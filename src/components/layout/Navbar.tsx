@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, TrendingUp } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -34,11 +35,11 @@ const Navbar = () => {
 
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button variant="ghost" onClick={() => window.location.href = '/auth'}>
-              Login
+            <Button variant="ghost" asChild>
+              <Link to="/auth">Login</Link>
             </Button>
-            <Button variant="hero" onClick={() => window.location.href = '/auth'}>
-              Get Started
+            <Button variant="hero" asChild>
+              <Link to="/auth">Get Started</Link>
             </Button>
           </div>
 
@@ -68,11 +69,11 @@ const Navbar = () => {
                 Pricing
               </a>
               <div className="flex flex-col space-y-2 pt-4">
-                <Button variant="ghost" onClick={() => window.location.href = '/auth'}>
-                  Login
+                <Button variant="ghost" asChild>
+                  <Link to="/auth">Login</Link>
                 </Button>
-                <Button variant="hero" onClick={() => window.location.href = '/auth'}>
-                  Get Started
+                <Button variant="hero" asChild>
+                  <Link to="/auth">Get Started</Link>
                 </Button>
               </div>
             </div>

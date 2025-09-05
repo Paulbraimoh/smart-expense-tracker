@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Play, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import dashboardPreview from "@/assets/dashboard-preview.jpg";
 
 const Hero = () => {
@@ -28,9 +29,11 @@ const Hero = () => {
             </div>
             
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button variant="hero" size="lg" className="group">
-                Try Free
-                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              <Button variant="hero" size="lg" className="group" asChild>
+                <Link to="/auth">
+                  Try Free
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                </Link>
               </Button>
               <Button variant="outline" size="lg" className="group">
                 <Play className="mr-2 h-5 w-5" />
