@@ -38,35 +38,6 @@ const App = () => (
               <Route path="settings" element={<Settings />} />
               <Route path="notifications" element={<Notifications />} />
             </Route>
-            <Route path="/transactions" element={
-              <ProtectedRoute>
-                <DashboardLayout />
-              </ProtectedRoute>
-            }>
-              <Route index element={<Transactions />} />
-            </Route>
-            <Route path="/analytics" element={
-              <ProtectedRoute>
-                <DashboardLayout />
-              </ProtectedRoute>
-            }>
-              <Route index element={<Analytics />} />
-            </Route>
-            <Route path="/settings" element={
-              <ProtectedRoute>
-                <DashboardLayout />
-              </ProtectedRoute>
-            }>
-              <Route index element={<Settings />} />
-            </Route>
-            <Route path="/notifications" element={
-              <ProtectedRoute>
-                <DashboardLayout />
-              </ProtectedRoute>
-            }>
-              <Route index element={<Notifications />} />
-            </Route>
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

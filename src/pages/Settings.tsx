@@ -141,12 +141,41 @@ const Settings = () => {
     try {
       setSaving(true);
       
-      // Upload to Supabase storage (would need storage bucket setup)
-      // For now, we'll just show a success message
+      // Create unique filename
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}/avatar.${fileExt}`;
+      
+      // Upload file to Supabase storage
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(fileName, file, { upsert: true });
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(fileName);
+
+      // Update profile with new avatar URL
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ avatar_url: publicUrl })
+        .eq('user_id', user.id);
+
+      if (updateError) {
+        throw updateError;
+      }
+
       toast({
         title: "Profile image uploaded",
         description: "Your profile image has been updated successfully.",
       });
+      
+      // Refresh profile data
+      fetchProfile();
     } catch (error) {
       console.error('Error uploading avatar:', error);
       toast({
