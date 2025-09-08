@@ -23,10 +23,10 @@ const AppSidebar = ({ isOpen, onClose }: AppSidebarProps) => {
 
   const sidebarItems = [
     { id: 'dashboard', label: 'Dashboard', icon: Home, path: '/dashboard' },
-    { id: 'transactions', label: 'Transactions', icon: CreditCard, path: '/transactions' },
-    { id: 'analytics', label: 'Analytics', icon: BarChart3, path: '/analytics' },
-    { id: 'notifications', label: 'Notifications', icon: Bell, path: '/notifications' },
-    { id: 'settings', label: 'Settings', icon: Settings, path: '/settings' },
+    { id: 'transactions', label: 'Transactions', icon: CreditCard, path: '/dashboard/transactions' },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3, path: '/dashboard/analytics' },
+    { id: 'notifications', label: 'Notifications', icon: Bell, path: '/dashboard/notifications' },
+    { id: 'settings', label: 'Settings', icon: Settings, path: '/dashboard/settings' },
   ];
 
   const isActivePath = (path: string) => {
