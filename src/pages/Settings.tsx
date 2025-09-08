@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { useProfile } from '@/hooks/useProfile';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,7 +9,8 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
-import { User, Mail, Save, Upload, AlertCircle } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { User, Mail, Save, Upload, AlertCircle, Bell } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
@@ -34,9 +36,17 @@ const CURRENCIES = [
 
 const Settings = () => {
   const { user, signOut } = useAuth();
+  const { profile: contextProfile, refreshProfile } = useProfile();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  
+  const [notificationSettings, setNotificationSettings] = useState({
+    email: true,
+    push: false,
+    sms: false,
+    marketing: false
+  });
   
   const [formData, setFormData] = useState({
     display_name: '',
@@ -129,6 +139,7 @@ const Settings = () => {
         description: "Profile updated successfully"
       });
       fetchProfile();
+      refreshProfile(); // Update global profile context
     }
     
     setSaving(false);
@@ -176,6 +187,7 @@ const Settings = () => {
       
       // Refresh profile data
       fetchProfile();
+      refreshProfile(); // Update global profile context
     } catch (error) {
       console.error('Error uploading avatar:', error);
       toast({
@@ -398,11 +410,63 @@ const Settings = () => {
           <Separator />
 
           <div>
-            <h3 className="font-medium mb-2">Notifications</h3>
-            <p className="text-sm text-muted mb-4">Manage your notification preferences</p>
-            <Button variant="outline" disabled>
-              Notification Settings (Coming Soon)
-            </Button>
+            <h3 className="font-medium mb-4 flex items-center space-x-2">
+              <Bell className="h-4 w-4" />
+              <span>Notification Preferences</span>
+            </h3>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">Email Notifications</p>
+                  <p className="text-sm text-muted">Receive updates via email</p>
+                </div>
+                <Switch 
+                  checked={notificationSettings.email}
+                  onCheckedChange={(checked) => 
+                    setNotificationSettings(prev => ({ ...prev, email: checked }))
+                  }
+                />
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">Push Notifications</p>
+                  <p className="text-sm text-muted">Get notifications on your device</p>
+                </div>
+                <Switch 
+                  checked={notificationSettings.push}
+                  onCheckedChange={(checked) => 
+                    setNotificationSettings(prev => ({ ...prev, push: checked }))
+                  }
+                />
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">SMS Notifications</p>
+                  <p className="text-sm text-muted">Receive text messages for important updates</p>
+                </div>
+                <Switch 
+                  checked={notificationSettings.sms}
+                  onCheckedChange={(checked) => 
+                    setNotificationSettings(prev => ({ ...prev, sms: checked }))
+                  }
+                />
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium">Marketing Communications</p>
+                  <p className="text-sm text-muted">Tips, offers, and product updates</p>
+                </div>
+                <Switch 
+                  checked={notificationSettings.marketing}
+                  onCheckedChange={(checked) => 
+                    setNotificationSettings(prev => ({ ...prev, marketing: checked }))
+                  }
+                />
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>

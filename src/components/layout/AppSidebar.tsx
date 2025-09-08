@@ -1,6 +1,8 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { useProfile } from '@/hooks/useProfile';
 import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { 
   TrendingUp, 
   Home, 
@@ -19,6 +21,7 @@ interface AppSidebarProps {
 
 const AppSidebar = ({ isOpen, onClose }: AppSidebarProps) => {
   const { user, signOut } = useAuth();
+  const { profile } = useProfile();
   const location = useLocation();
 
   const sidebarItems = [
@@ -90,12 +93,16 @@ const AppSidebar = ({ isOpen, onClose }: AppSidebarProps) => {
           {/* User Section */}
           <div className="p-4 border-t border-border">
             <div className="flex items-center space-x-3 mb-3">
-              <div className="w-8 h-8 bg-gradient-primary rounded-full flex items-center justify-center">
-                <User className="h-4 w-4 text-background" />
-              </div>
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={profile?.avatar_url || ''} />
+                <AvatarFallback className="bg-gradient-primary text-background text-xs">
+                  {profile?.display_name ? profile.display_name.charAt(0).toUpperCase() : 
+                   user?.email?.charAt(0).toUpperCase() || 'U'}
+                </AvatarFallback>
+              </Avatar>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium truncate">
-                  {user?.email?.split('@')[0] || 'User'}
+                  {profile?.display_name || user?.email?.split('@')[0] || 'User'}
                 </p>
                 <p className="text-xs text-muted truncate">
                   {user?.email}

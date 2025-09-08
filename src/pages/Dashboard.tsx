@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { useProfile } from '@/hooks/useProfile';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TrendingUp } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -15,6 +16,7 @@ interface DashboardData {
 
 const Dashboard = () => {
   const { user } = useAuth();
+  const { profile } = useProfile();
   const [dashboardData, setDashboardData] = useState<DashboardData>({
     totalBalance: 0,
     income: 0,
@@ -82,8 +84,26 @@ const Dashboard = () => {
     }
   };
 
+  const formatCurrency = (amount: number) => {
+    const currency = profile?.currency || 'NGN';
+    const symbols: { [key: string]: string } = {
+      'NGN': '₦',
+      'USD': '$',
+      'EUR': '€',
+      'GBP': '£',
+      'JPY': '¥',
+      'CAD': 'C$',
+      'AUD': 'A$',
+      'CHF': 'CHF',
+      'CNY': '¥'
+    };
+    
+    return `${symbols[currency] || currency} ${amount.toFixed(2)}`;
+  };
+
   const generateAIInsights = (income: number, expenses: number, savings: number, transactions: any[]) => {
     const insights = [];
+    const currencySymbol = profile?.currency === 'NGN' ? '₦' : '$';
     
     if (transactions.length > 0) {
       // Food spending insight
@@ -93,13 +113,13 @@ const Dashboard = () => {
       
       if (foodExpenses > 0) {
         const foodPercentage = Math.round((foodExpenses / expenses) * 100);
-        insights.push(`💡 You're spending ${foodPercentage}% on food this month. Consider reducing by 15% to save an extra $${Math.round(foodExpenses * 0.15)}.`);
+        insights.push(`💡 You're spending ${foodPercentage}% on food this month. Consider reducing by 15% to save an extra ${currencySymbol}${Math.round(foodExpenses * 0.15)}.`);
       }
 
       // Savings insight
       if (savings > 0) {
         insights.push(`📈 Your savings rate has improved this month. Great job staying on track!`);
-        insights.push(`🎯 You're on pace to exceed your monthly savings goal by $${Math.round(savings * 0.1)}.`);
+        insights.push(`🎯 You're on pace to exceed your monthly savings goal by ${currencySymbol}${Math.round(savings * 0.1)}.`);
       }
     } else {
       insights.push(`💡 Start by adding your first transaction to get personalized insights.`);
@@ -130,7 +150,7 @@ const Dashboard = () => {
             <CardTitle className="text-background/90">Total Balance</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${dashboardData.totalBalance.toFixed(2)}</div>
+            <div className="text-2xl font-bold">{formatCurrency(dashboardData.totalBalance)}</div>
             <p className="text-background/70">{dashboardData.balanceChange}% from last month</p>
           </CardContent>
         </Card>
@@ -140,7 +160,7 @@ const Dashboard = () => {
             <CardTitle>Income</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-success">${dashboardData.income.toFixed(2)}</div>
+            <div className="text-2xl font-bold text-success">{formatCurrency(dashboardData.income)}</div>
             <p className="text-muted">This month</p>
           </CardContent>
         </Card>
@@ -150,7 +170,7 @@ const Dashboard = () => {
             <CardTitle>Expenses</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-destructive">${dashboardData.expenses.toFixed(2)}</div>
+            <div className="text-2xl font-bold text-destructive">{formatCurrency(dashboardData.expenses)}</div>
             <p className="text-muted">This month</p>
           </CardContent>
         </Card>
@@ -160,7 +180,7 @@ const Dashboard = () => {
             <CardTitle>Savings</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-primary">${dashboardData.savings.toFixed(2)}</div>
+            <div className="text-2xl font-bold text-primary">{formatCurrency(dashboardData.savings)}</div>
             <p className="text-muted">{dashboardData.savingsChange}% from last month</p>
           </CardContent>
         </Card>
