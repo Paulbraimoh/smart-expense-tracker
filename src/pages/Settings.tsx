@@ -21,6 +21,7 @@ interface Profile {
 }
 
 const CURRENCIES = [
+  { value: 'NGN', label: 'Nigerian Naira (₦)' },
   { value: 'USD', label: 'US Dollar ($)' },
   { value: 'EUR', label: 'Euro (€)' },
   { value: 'GBP', label: 'British Pound (£)' },
@@ -39,7 +40,7 @@ const Settings = () => {
   
   const [formData, setFormData] = useState({
     display_name: '',
-    currency: 'USD',
+    currency: 'NGN',
     email: user?.email || ''
   });
 
@@ -70,7 +71,7 @@ const Settings = () => {
       setProfile(data);
       setFormData({
         display_name: data.display_name || '',
-        currency: data.currency || 'USD',
+        currency: data.currency || 'NGN',
         email: user?.email || ''
       });
     }
@@ -85,7 +86,7 @@ const Settings = () => {
       .insert({
         user_id: user.id,
         display_name: user.email?.split('@')[0] || 'User',
-        currency: 'USD'
+        currency: 'NGN'
       })
       .select()
       .single();
@@ -96,7 +97,7 @@ const Settings = () => {
       setProfile(data);
       setFormData({
         display_name: data.display_name || '',
-        currency: data.currency || 'USD',
+        currency: data.currency || 'NGN',
         email: user?.email || ''
       });
     }
