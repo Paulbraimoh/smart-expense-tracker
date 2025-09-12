@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, Legend } from 'recharts';
 import { TrendingUp, TrendingDown, DollarSign, Target } from 'lucide-react';
+import { useProfile } from '@/hooks/useProfile';
 
 interface Transaction {
   amount: number;
@@ -25,6 +26,7 @@ const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#00ff7f', '#ff6b6b'
 
 const Analytics = () => {
   const { user } = useAuth();
+  const { profile } = useProfile();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [timeRange, setTimeRange] = useState('3months');
@@ -147,6 +149,12 @@ const Analytics = () => {
   const topSpendingCategories = getTopSpendingCategories();
   const stats = getSummaryStats();
 
+  const formatCurrency = (amount: number) => {
+    const currency = profile?.currency || 'USD';
+    const symbol = currency === 'NGN' ? '₦' : currency === 'USD' ? '$' : '€';
+    return `${symbol}${amount.toFixed(2)}`;
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -183,9 +191,9 @@ const Analytics = () => {
             <TrendingUp className="h-4 w-4 text-success" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-success">${stats.totalIncome.toFixed(2)}</div>
+            <div className="text-2xl font-bold text-success">{formatCurrency(stats.totalIncome)}</div>
             <p className="text-xs text-muted">
-              Avg: ${stats.avgMonthlyIncome.toFixed(2)}/month
+              Avg: {formatCurrency(stats.avgMonthlyIncome)}/month
             </p>
           </CardContent>
         </Card>
@@ -196,9 +204,9 @@ const Analytics = () => {
             <TrendingDown className="h-4 w-4 text-destructive" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-destructive">${stats.totalExpenses.toFixed(2)}</div>
+            <div className="text-2xl font-bold text-destructive">{formatCurrency(stats.totalExpenses)}</div>
             <p className="text-xs text-muted">
-              Avg: ${stats.avgMonthlyExpenses.toFixed(2)}/month
+              Avg: {formatCurrency(stats.avgMonthlyExpenses)}/month
             </p>
           </CardContent>
         </Card>
@@ -210,7 +218,7 @@ const Analytics = () => {
           </CardHeader>
           <CardContent>
             <div className={`text-2xl font-bold ${stats.netIncome >= 0 ? 'text-success' : 'text-destructive'}`}>
-              ${stats.netIncome.toFixed(2)}
+              {formatCurrency(stats.netIncome)}
             </div>
             <p className="text-xs text-muted">
               {stats.netIncome >= 0 ? 'Surplus' : 'Deficit'}
@@ -321,13 +329,13 @@ const Analytics = () => {
             
             {categoryBreakdown.length > 0 && (
               <div className="p-3 bg-card rounded-lg border border-border">
-                <p className="text-sm">📊 Your highest spending category is "{categoryBreakdown[0].name}" at ${categoryBreakdown[0].value.toFixed(2)}. Consider ways to optimize this expense.</p>
+                <p className="text-sm">📊 Your highest spending category is "{categoryBreakdown[0].name}" at {formatCurrency(categoryBreakdown[0].value)}. Consider ways to optimize this expense.</p>
               </div>
             )}
             
             {stats.netIncome > 0 && (
               <div className="p-3 bg-card rounded-lg border border-border">
-                <p className="text-sm">🎯 Great job! You have a positive net income of ${stats.netIncome.toFixed(2)}. Consider investing this surplus for long-term growth.</p>
+                <p className="text-sm">🎯 Great job! You have a positive net income of {formatCurrency(stats.netIncome)}. Consider investing this surplus for long-term growth.</p>
               </div>
             )}
             

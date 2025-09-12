@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Filter, Search, ArrowUpCircle, ArrowDownCircle, Edit, Trash2 } from 'lucide-react';
+import { useProfile } from '@/hooks/useProfile';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { toast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
@@ -41,6 +42,7 @@ const CATEGORIES = [
 
 const Transactions = () => {
   const { user } = useAuth();
+  const { profile } = useProfile();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -171,6 +173,12 @@ const Transactions = () => {
     .filter(t => t.type === 'expense')
     .reduce((sum, t) => sum + t.amount, 0);
 
+  const formatCurrency = (amount: number) => {
+    const currency = profile?.currency || 'USD';
+    const symbol = currency === 'NGN' ? '₦' : currency === 'USD' ? '$' : '€';
+    return `${symbol}${amount.toFixed(2)}`;
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -275,7 +283,7 @@ const Transactions = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-success">${totalIncome.toFixed(2)}</div>
+            <div className="text-2xl font-bold text-success">{formatCurrency(totalIncome)}</div>
           </CardContent>
         </Card>
         
@@ -287,7 +295,7 @@ const Transactions = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-destructive">${totalExpenses.toFixed(2)}</div>
+            <div className="text-2xl font-bold text-destructive">{formatCurrency(totalExpenses)}</div>
           </CardContent>
         </Card>
         
@@ -297,7 +305,7 @@ const Transactions = () => {
           </CardHeader>
           <CardContent>
             <div className={`text-2xl font-bold ${totalIncome - totalExpenses >= 0 ? 'text-success' : 'text-destructive'}`}>
-              ${(totalIncome - totalExpenses).toFixed(2)}
+              {formatCurrency(totalIncome - totalExpenses)}
             </div>
           </CardContent>
         </Card>
@@ -385,7 +393,7 @@ const Transactions = () => {
                     <TableCell className={`text-right font-medium ${
                       transaction.type === 'income' ? 'text-success' : 'text-destructive'
                     }`}>
-                      {transaction.type === 'income' ? '+' : '-'}${transaction.amount.toFixed(2)}
+                      {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
                     </TableCell>
                     <TableCell className="text-right">
                       <Button
