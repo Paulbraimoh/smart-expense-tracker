@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useProfile } from '@/hooks/useProfile';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { TrendingUp } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import DashboardAIInsights from "@/components/sections/DashboardAIInsights";
 
 interface DashboardData {
   totalBalance: number;
@@ -187,25 +187,7 @@ const Dashboard = () => {
       </div>
 
       {/* AI Insights */}
-      <Card className="bg-gradient-surface border-border">
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <div className="p-1 bg-gradient-primary rounded">
-              <TrendingUp className="h-4 w-4 text-background" />
-            </div>
-            <span>AI Financial Insights</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {aiInsights.map((insight, index) => (
-              <div key={index} className="p-3 bg-card rounded-lg border border-border">
-                <p className="text-sm">{insight}</p>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      <DashboardAIInsights />
     </div>
   );
 };
