@@ -58,7 +58,7 @@ const Footer = () => {
         {/* Bottom Section */}
         <div className="mt-12 pt-8 border-t border-border flex flex-col sm:flex-row justify-between items-center">
           <div className="text-muted text-sm">
-            © 2024 FinTrack AI. All rights reserved.
+            © 2025 FinTrack AI. All rights reserved.
           </div>
           
           <div className="flex items-center space-x-6 mt-4 sm:mt-0">
