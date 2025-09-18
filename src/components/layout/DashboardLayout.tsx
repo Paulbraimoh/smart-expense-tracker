@@ -15,7 +15,7 @@ const DashboardLayout = () => {
       <AppSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Main Content Area */}
-      <div className="flex-1 lg:ml-64">
+      <div className="flex-1">
         {/* Header */}
         <header className="bg-card-elevated border-b border-border">
           <div className="flex items-center justify-between px-4 h-16">
