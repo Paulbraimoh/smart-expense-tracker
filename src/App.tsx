@@ -5,6 +5,7 @@ import { Routes, Route } from "react-router-dom";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
+import EmailConfirmed from "./pages/EmailConfirmed";
 import Dashboard from "./pages/Dashboard";
 import Transactions from "./pages/Transactions";
 import Analytics from "./pages/Analytics";
@@ -20,6 +21,7 @@ const App = () => (
     <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/auth" element={<Auth />} />
+      <Route path="/email-confirmed" element={<EmailConfirmed />} />
       <Route path="/dashboard" element={
         <ProtectedRoute>
           <DashboardLayout />
