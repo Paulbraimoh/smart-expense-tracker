@@ -99,14 +99,9 @@ const Auth = () => {
       // Clean up existing state
       cleanupAuthState();
 
-      const redirectUrl = `${window.location.origin}/email-confirmed`;
-      
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
-        options: {
-          emailRedirectTo: redirectUrl
-        }
       });
 
       if (error) throw error;

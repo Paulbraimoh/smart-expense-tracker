@@ -17,37 +17,58 @@ const EmailConfirmed = () => {
   useEffect(() => {
     const handleEmailConfirmation = async () => {
       try {
+        // Check for error parameters first
+        const error = searchParams.get('error');
+        const errorDescription = searchParams.get('error_description');
+        
+        if (error) {
+          throw new Error(errorDescription || error);
+        }
+
         // Get the token hash and type from URL parameters
         const tokenHash = searchParams.get('token_hash');
         const type = searchParams.get('type');
 
-        if (!tokenHash || !type) {
-          setError('Invalid confirmation link');
-          setLoading(false);
-          return;
+        if (tokenHash && type) {
+          // Verify the email confirmation
+          const { data, error } = await supabase.auth.verifyOtp({
+            token_hash: tokenHash,
+            type: type as any,
+          });
+
+          if (error) {
+            throw error;
+          }
+
+          if (data.user) {
+            setConfirmed(true);
+            toast({
+              title: "Email Confirmed!",
+              description: "Your email has been successfully verified.",
+            });
+            
+            // Redirect to dashboard after 3 seconds
+            setTimeout(() => {
+              navigate('/dashboard');
+            }, 3000);
+            return;
+          }
         }
 
-        // Verify the email confirmation
-        const { data, error } = await supabase.auth.verifyOtp({
-          token_hash: tokenHash,
-          type: type as any,
-        });
-
-        if (error) {
-          throw error;
-        }
-
-        if (data.user) {
+        // If no token parameters, check if user is already authenticated
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
           setConfirmed(true);
           toast({
             title: "Email Confirmed!",
             description: "Your email has been successfully verified.",
           });
           
-          // Redirect to dashboard after 3 seconds
           setTimeout(() => {
             navigate('/dashboard');
           }, 3000);
+        } else {
+          throw new Error('Invalid confirmation link or session expired');
         }
       } catch (err: any) {
         console.error('Email confirmation error:', err);
